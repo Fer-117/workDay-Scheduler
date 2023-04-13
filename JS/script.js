@@ -1,18 +1,16 @@
+// Variable for the parent container where each ToDo block is generated
 let todoContainer = $("#parentDiv");
-let textContainer = $("textarea");
-const hours = 24;
+// An array of all of the blocks, 1 block for each hour of the day
+let todoArray = $(".todo");
 
-// let iElement = $("<i>");
-// let button = $("<button>");
-// let textArea = $("<textarea>");
-// let hourDiv = $("<div>");
-// let todoDiv = $("<div>");
-let currentTime = dayjs().hour();
-const items = { ...localStorage };
+// The current time from the dayjs api
+let currentTime = parseInt(dayjs().format("H"));
 
+// gets the id from each to do block and compares it to the current time to set the color
 function colorCode() {
-  let currentId = parseInt($(this).attr("id"));
-  console.log(currentId);
+  // gets the id of the div with the id in format "hour-#" by spliting at the dash (-)
+  let currentId = parseInt($(this).attr("id").split("-")[1]);
+  // compares the id of the divs to the current time of the day
   if (currentId > currentTime) {
     $(this).addClass("future");
   } else if (currentId == currentTime) {
@@ -22,74 +20,42 @@ function colorCode() {
   }
 }
 
-// Wrap all code that interacts with the DOM in a call to jQuery to ensure that
-// the code isn't run until the browser has finished rendering all the elements
-// in the html.
 $(function () {
-  // TODO: Add a listener for click events on the save button. This code should
-  // use the id in the containing time-block as a key to save the user input in
-  // local storage. HINT: What does `this` reference in the click listener
-  // function? How can DOM traversal be used to get the "hour-x" id of the
-  // time-block containing the button that was clicked? How might the id be
-  // useful when saving the description in local storage?
-  todoContainer.on("click", "button", (event) => {
-    event.stopPropagation();
-    // event.preventDefault();
-    let parentID = event.target.parentElement.id;
-    let textSibling = event.target.previousElementSibling.value;
+  // get the items from local storage to display in the text areas
+  for (let i = 1; i <= 24; i++) {
+    let todoText = localStorage.getItem(`hour-${i}`);
+    if (todoText !== null) {
+      $(`#hour-${i}`).find("textarea").val(todoText);
+    }
+  }
 
-    if (textSibling === null) {
-      return;
-    } else {
-      localStorage.setItem(parentID, textSibling);
-      console.log(textSibling);
+  // Adds a listener on the container for all of the save buttons
+  /*
+    It uses even delegation so it will only activate when we click on a button (save button)
+    then it will get the parent div of the button which has the id's in the format "hour-#".
+    When it has the id it will store that id along with the text from the text area in 
+    local storage only if there is text to be stored. 
+  */
+  todoContainer.on("click", "button", (event) => {
+    let parentDiv = $(event.target).closest(".time-block");
+    let parentId = parentDiv.attr("id");
+    let idArr = parentId.split("-");
+    let hourId = idArr[1];
+    let todoText = parentDiv.find("textarea").val();
+
+    if (todoText.trim() !== "") {
+      // Set todoText to local storage
+      localStorage.setItem(`hour-${hourId}`, todoText);
     }
   });
 
-  // TODO: Add code to apply the past, present, or future class to each time
-  // block by comparing the id to the current hour. HINTS: How can the id
-  // attribute of each time-block be used to conditionally add or remove the
-  // past, present, and future classes? How can Day.js be used to get the
-  // current hour in 24-hour time?
-  for (let i = 1; i <= hours; i++) {
-    todoContainer.append(
-      $("<div>")
-        .prop({
-          id: i,
-          className: "row time-block todo",
-        })
-        .append(
-          $("<div>").prop({
-            innerHTML: i + " hour(s)",
-            className: "col-2 col-md-1 hour text-center py-3",
-          }),
-          $("<textarea>").prop({
-            className: "col-8 col-md-10 description",
-            rows: "3",
-          }),
-          $("<button>")
-            .prop({
-              className: "btn saveBtn col-2 col-md-1",
-              "aria-label": "save",
-            })
-            .append(
-              $("<i>").prop({
-                className: "fas fa-save",
-                "aria-hidden": "true",
-              })
-            )
-        )
-    );
-  }
-  let todoArray = $(".todo");
+  /* 
+  Get any user input that was saved in localStorage and set the values of the corresponding 
+  textarea elements
+  Display the current date in the header of the page
+  */
+  $("#currentDay").text(dayjs().format("dddd, MMMM D, YYYY"));
 
+  // Set the colors of the time-blocks based on the current time
   todoArray.each(colorCode);
-
-  // TODO: Add code to get any user input that was saved in localStorage and set
-  // the values of the corresponding textarea elements. HINT: How can the id
-  // attribute of each time-block be used to do this?
-
-  // TODO: Add code to display the current date in the header of the page.
-  let today = dayjs().format("dddd, MMMM D, YYYY");
-  $("#currentDay").text(today);
 });
