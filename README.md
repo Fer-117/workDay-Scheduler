@@ -1,13 +1,10 @@
 # Fer-117's Work Day Scheduler
 
 ## Table of contents
-
-- [Fer-117's Work Day Scheduler](#fer-117s-work-day-scheduler)
-  - [Table of contents](#table-of-contents)
-    - [Description](#description)
-    - [Technologies](#technologies)
-    - [Website](#website)
-    - [The following animation demonstrates the application functionality:](#the-following-animation-demonstrates-the-application-functionality)
+  - [Description](#description)
+  - [Technologies](#technologies)
+  - [Website](#website)
+  - [The following animation demonstrates the application functionality:](#the-following-animation-demonstrates-the-application-functionality)
 
 ### Description
 
