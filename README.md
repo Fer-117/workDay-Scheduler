@@ -21,7 +21,7 @@ A simple calendar application that allows a user to save events for typical work
 
 ### Website
 
-coming soon
+https://fer-117.github.io/workDay-Scheduler/
 
 ### The following animation demonstrates the application functionality:
 
